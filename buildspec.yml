@@ -1,0 +1,14 @@
+version: 0.2 # Specifies the version of the Buildspec file format.
+
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies" # Placeholder for any installation commands (none needed here).
+  build:
+    commands:
+      - echo "Building website" # Placeholder for build commands.
+      - cp index.html build/ # Copies the HTML file to a 'build' directory (used as the output artifact).
+artifacts:
+  files:
+    - "**/*" # Specifies all files in the 'build' directory to be included as artifacts.
+  base-directory: build # Specifies the base directory for the artifacts.
