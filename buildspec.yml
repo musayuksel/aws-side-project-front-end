@@ -7,6 +7,7 @@ phases:
   build:
     commands:
       - echo "Building website" # Placeholder for build commands.
+      - mkdir -p build # Creates a 'build' directory to store the output artifact.
       - cp index.html build/ # Copies the HTML file to a 'build' directory (used as the output artifact).
 artifacts:
   files:
