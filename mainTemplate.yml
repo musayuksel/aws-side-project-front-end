@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  # Create an S3 bucket to store website files and pipeline artifacts.
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: musa-website-test-bucket-123123
+
+  # Define an IAM role for Codepipeline to access resources
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: # Which AWS services can assume this role
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codepipeline.amazonaws.com # Allow CodePipeline to assume this role
+                - codebuild.amazonaws.com # Allow CodeBuild to assume this role
+            Action: sts:AssumeRole
+      Policies: # Attach policy to the role to allow specific action.
+        - PolicyName: CodePipelinePolicy # Name of the policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:* # Allow all actions on S3
+                  - codebuild:* # Allow all actions on CodeBuild
+                  - codepipeline:* # Allow all actions on CodePipeline
+                  - secretsmanager:GetSecretValue # Allow access to Secrets Manager
+                  - iam:PassRole # Allow passing roles to other services
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*" # Allow access to all resources
+
+  # Create a CodeBuild project to build the website.
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: musa-website-build-project # Name of the project
+      Source:
+        Type: GITHUB # Source is Github repository aws repo in musayuksel account
+        Location: https://github.com/musayuksel/aws.git # Create the CodePipeline resource.
+      Artifacts:
+        Type: S3 # Store the build artifacts in S3
+        Location: !Ref S3Bucket # Reference to the S3 bucket created above
+      Environment:
+        Type: LINUX_CONTAINER # Use a Linux container for the build
+        ComputeType: BUILD_GENERAL1_SMALL # Use a small compute type
+        Image: aws/codebuild/standard:6.0 # Standard build environment image
+      ServiceRole: !GetAtt PipelineRole.Arn # Use the IAM role created above
+
+  # Create a CodePipeline to automate the build and deployment process.
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn: !GetAtt PipelineRole.Arn # Links the IAM role created above to the pipeline.
+      Stages:
+        # Pulls code from Github
+        - Name: Source
+          Actions:
+            - Name: SourceAction # Name of the action in this stage
+              ActionTypeId:
+                Category: Source # This is a source stage
+                Owner: ThirdParty # Github is a third party service
+                Provider: GitHub # Source repository is Github
+                Version: "1" # Version of the action
+              Configuration:
+                Owner: musayuksel # Owner of the repository
+                Repo: aws # Repository name
+                Branch: main # Branch to pull code from
+                OAuthToken: "github_pat_token"
+                # OAuthToken: !Ref GitHubToken # # Reference to the GitHub token stored in Secrets Manager. Add this token to the secrets manager
+              OutputArtifacts:
+                - Name: SourceOutput # The artifact produced by this stage
+
+        # Builds stage - Use CodeBuild to build the website
+        - Name: Build
+          Actions:
+            - Name: BuildAction # Name of the build action
+              ActionTypeId:
+                Category: Build # This is a build stage
+                Owner: AWS # AWS owns the build service
+                Provider: CodeBuild # Use CodeBuild as the build service
+                Version: "1" # Version of the action
+              Configuration:
+                ProjectName: !Ref CodeBuildProject # Reference to the CodeBuild project
+              InputArtifacts:
+                - Name: SourceOutput # The artifact produced by the source stage
+              OutputArtifacts:
+                - Name: BuildOutput # The artifact produced by this stage
+
+        # Deploy Stage: Deploys the built artifact to S3
+        - Name: Deploy
+          Actions:
+            - Name: DeployAction # Name of the deploy action
+              ActionTypeId:
+                Category: Deploy # This is a deploy stage
+                Owner: AWS # AWS owns the deploy service
+                Provider: S3 # Use S3 as the deploy service
+                Version: "1" # Version of the action
+              Configuration:
+                BucketName: !Ref S3Bucket # Reference to the S3 bucket
+                Extract: "true" # Extract the artifact before deploying
+              InputArtifacts:
+                - Name: BuildOutput # The artifact produced by the build stage
+      ArtifactStore:
+        Type: S3 # Store the pipeline artifacts in S3
+        Location: !Ref S3Bucket # Reference to the S3 bucket created above
+
+Parameters:
+  GitHubToken:
+    Type: String
+    Description: "The GitHub OAuth token"
+# in the secrets manager, add the token as a secret with the a name
+# example: musa-github-token
+# and add the token as the value
+# when creating the stack, add the token as a parameter with the same name- musa-github-token
