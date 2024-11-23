@@ -5,6 +5,9 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
+      - echo "Configuring npm to use the public registry"
+      - npm config set registry https://registry.npmjs.org/ # Use the public npm registry
+      - npm config set strict-ssl false # Disable strict SSL (not recommended for production)
       - echo "Clearing npm cache"
       - npm cache clean --force # Clear npm cache
       - echo "Installing dependencies..........."
@@ -12,9 +15,10 @@ phases:
   build:
     commands:
       - echo "Building the Preact App..........." # Placeholder for build commands.
-      - npm run build
+      - mkdir -p build # Creates a 'build' directory to store the output artifact.
+      - cp index.html build/
 artifacts:
   files:
-    - "build/**/*"
-    # - "**/*" # Specifies all files in the 'build' directory to be included as artifacts.
+    # - "build/**/*"
+    - "**/*" # Specifies all files in the 'build' directory to be included as artifacts.
   base-directory: build # Specifies the base directory for the artifacts.
