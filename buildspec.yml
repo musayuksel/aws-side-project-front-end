@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - echo "Installing dependencies..........."
-      - echo "Node version.....: $(node -v)"
+      - echo "Node version.....:$(node -v)"
       # - npm install # Placeholder for installing dependencies.
   build:
     commands:
