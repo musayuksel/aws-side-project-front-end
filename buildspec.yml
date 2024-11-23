@@ -5,13 +5,10 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "Configuring npm to use the public registry"
-      - npm config set registry https://registry.npmjs.org/ # Use the public npm registry
-      - npm config set strict-ssl false # Disable strict SSL (not recommended for production)
       - echo "Clearing npm cache"
       - npm cache clean --force # Clear npm cache
-      - echo "Installing dependencies using npm ci..........."
-      - npm ci
+      - echo "Installing dependencies..........."
+      - npm install
   build:
     commands:
       - echo "Building the Preact App..........." # Placeholder for build commands.
