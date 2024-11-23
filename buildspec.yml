@@ -7,8 +7,11 @@ phases:
     commands:
       - echo "Configuring npm to use the public registry"
       - npm config set registry https://registry.npmjs.org/ # Use the public npm registry
-      - echo "Installing dependencies..........."
-      - npm install || npm install || npm install # Retry npm install up to 3 times if it fails
+      - npm config set strict-ssl false # Disable strict SSL (not recommended for production)
+      - echo "Clearing npm cache"
+      - npm cache clean --force # Clear npm cache
+      - echo "Installing dependencies using npm ci..........."
+      - npm ci
   build:
     commands:
       - echo "Building the Preact App..........." # Placeholder for build commands.
