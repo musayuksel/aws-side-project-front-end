@@ -3,13 +3,13 @@ version: 0.2 # Specifies the version of the Buildspec file format.
 phases:
   install:
     commands:
-      - echo "Installing dependencies" # Placeholder for any installation commands (none needed here).
+      - echo "Installing dependencies..........." # Placeholder for any installation commands (none needed here).
   build:
     commands:
-      - echo "Building website" # Placeholder for build commands.
-      - mkdir -p build # Creates a 'build' directory to store the output artifact.
-      - cp index.html build/ # Copies the HTML file to a 'build' directory (used as the output artifact).
+      - echo "Building the Preact App..........." # Placeholder for build commands.
+      - npm run build
 artifacts:
   files:
-    - "**/*" # Specifies all files in the 'build' directory to be included as artifacts.
+    - "build/**/*"
+    # - "**/*" # Specifies all files in the 'build' directory to be included as artifacts.
   base-directory: build # Specifies the base directory for the artifacts.
