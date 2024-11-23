@@ -2,16 +2,10 @@ version: 0.2 # Specifies the version of the Buildspec file format.
 
 phases:
   install:
-    runtime-versions:
-      nodejs: 20
     commands:
-      - echo "Configuring npm to use the public registry"
-      - npm config set registry https://registry.npmjs.org/ # Use the public npm registry
-      - npm config set strict-ssl false # Disable strict SSL (not recommended for production)
-      - echo "Clearing npm cache"
-      - npm cache clean --force # Clear npm cache
       - echo "Installing dependencies..........."
-      - npm install
+      - echo "Node version.....: $(node -v)"
+      # - npm install # Placeholder for installing dependencies.
   build:
     commands:
       - echo "Building the Preact App..........." # Placeholder for build commands.
