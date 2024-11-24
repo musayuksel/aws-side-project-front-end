@@ -6,6 +6,9 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: musa-website-test-bucket-123123
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        # ErrorDocument: index.html
 
   # Define an IAM role for Codepipeline to access resources
   PipelineRole:
@@ -46,8 +49,9 @@ Resources:
         Type: GITHUB # Source is Github repository aws repo in musayuksel account
         Location: https://github.com/musayuksel/aws.git # Create the CodePipeline resource.
       Artifacts:
-        Type: S3 # Store the build artifacts in S3
-        Location: !Ref S3Bucket # Reference to the S3 bucket created above
+        Type: CODEPIPELINE # his ensures that artifacts are managed within the pipeline rather than outputting directly to S3.
+        # Type: S3 # Store the build artifacts in S3
+        # Location: !Ref S3Bucket # Reference to the S3 bucket created above
       Environment:
         Type: LINUX_CONTAINER # Use a Linux container for the build
         ComputeType: BUILD_GENERAL1_SMALL # Use a small compute type
@@ -73,7 +77,7 @@ Resources:
                 Owner: musayuksel # Owner of the repository
                 Repo: aws # Repository name
                 Branch: main # Branch to pull code from
-                OAuthToken: "github_pat_token"
+                OAuthToken: "github_pat_some token- do NOT use this way in production"
                 # OAuthToken: !Ref GitHubToken # # Reference to the GitHub token stored in Secrets Manager. Add this token to the secrets manager
               OutputArtifacts:
                 - Name: SourceOutput # The artifact produced by this stage
