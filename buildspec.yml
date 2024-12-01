@@ -18,4 +18,4 @@ artifacts:
   files:
     # - "build/**/*"
     - "**/*" # Specifies all files in the 'build' directory to be included as artifacts.
-  base-directory: build # Specifies the base directory for the artifacts.
+  # base-directory: build # Specifies the base directory for the artifacts.
