@@ -1,12 +1,12 @@
 {
-  "name": "aws",
+  "name": "musa-yuksel",
   "version": "1.0.0",
-  "description": "test",
-  "main": "index.js",
+  "description": "Demo application ",
+  "main": "index.html",
   "scripts": {
     "test": "jest"
   },
-  "author": "",
+  "author": "MusaYuksel",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.7.0"

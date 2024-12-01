@@ -6,13 +6,14 @@ phases:
       - echo "Installing dependencies..........."
       - echo "Node version.....:$(node -v)"
       - echo "NPM version......:$(npm -v)"
-      # - npm install # Placeholder for installing dependencies.
+      - npm install # Placeholder for installing dependencies.
+  pre_build:
+    commands:
+      - echo "Running unit tests..........."
+      - npm run test
   build:
     commands:
-      - echo "Building the Preact App..........." # Placeholder for build commands.
-      - mkdir -p build # Creates a 'build' directory to store the output artifact.
-      - cp index.html build/
-      # - npm run test
+      - echo "Building the App..........."
 artifacts:
   files:
     # - "build/**/*"
