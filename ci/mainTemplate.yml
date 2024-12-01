@@ -1,29 +1,24 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Creates a test pipeline to build and deploy a website.
-# Parameters:
-#   GitHubRepo:
-#     Type: String
-#     Description: The name of the GitHub repo with your AWS cloudformation stacks
-#   GitHubBranch:
-#     Type: String
-#     Description: The git branch you wish to deploy. Used in both the Source Stage and the Webhook.
-#     Default: main
-#   CodeBuildImage:
-#     Type: String
-#     Description: The Docker Image to use for CodeBuild Project(s)
-#     Default: aws/codebuild/standard:5.0
-#   CodeStarConnectionArn:
-#     Type: String
-#     Description: The ARN of the CodeStar connection. App Admin should have set this up and you can find it by logging into your account and visiting https://eu-west-1.console.aws.amazon.com/codesuite/settings/connections
-#   CodePipelineName:
-#     Type: String
-#     Description: The name of the pipeline
-#   DevAWSAccountID:
-#     Type: String
-#     Description: ID of the AWS Dev Account
-#   ProdAWSAccountID:
-#     Type: String
-#     Description: ID of the AWS Prod Account
+
+Parameters:
+  GitHubToken:
+    Type: String
+    Description: "The GitHub OAuth token"
+    NoEcho: true # This hides the parameter value in the AWS Management Console
+    # AWS secrets manager is a better place to store secrets.
+  RepoName:
+    Type: String
+    Description: "The name of the GitHub repository"
+    Default: "aws"
+  RepoOwner:
+    Type: String
+    Description: "The owner of the GitHub repository"
+    Default: "musayuksel"
+  BranchName:
+    Type: String
+    Default: "main"
+    Description: "The branch of the GitHub repository"
 
 Resources:
   # Create an S3 bucket to store website files and pipeline artifacts.
@@ -70,7 +65,7 @@ Resources:
       Name: musa-website-build-project # Name of the project
       Source:
         Type: GITHUB # Source is Github repository aws repo in musayuksel account
-        Location: https://github.com/musayuksel/aws.git # Create the CodePipeline resource.
+        Location: !Sub "https://github.com/${RepoOwner}/${RepoName}.git" #https://github.com/musayuksel/aws.git # Create the CodePipeline resource.
       Artifacts:
         Type: S3 # Store the build artifacts in S3
         Location: !Ref S3Bucket # Reference to the S3 bucket created above
@@ -96,11 +91,10 @@ Resources:
                 Provider: GitHub # Source repository is Github
                 Version: "1" # Version of the action
               Configuration:
-                Owner: musayuksel # Owner of the repository
-                Repo: aws # Repository name
-                Branch: main # Branch to pull code from
-                OAuthToken: "github_pat_test"
-                # OAuthToken: !Ref GitHubToken # # Reference to the GitHub token stored in Secrets Manager. Add this token to the secrets manager
+                Owner: !Ref RepoOwner
+                Repo: !Ref RepoName
+                Branch: !Ref BranchName
+                OAuthToken: !Ref GitHubToken
               OutputArtifacts:
                 - Name: SourceOutput # The artifact produced by this stage
 
@@ -137,119 +131,3 @@ Resources:
       ArtifactStore:
         Type: S3 # Store the pipeline artifacts in S3
         Location: !Ref S3Bucket # Reference to the S3 bucket created above
-
-Parameters:
-  GitHubToken:
-    Type: String
-    Description: "The GitHub OAuth token"
-# in the secrets manager, add the token as a secret with the a name
-# example: musa-github-token
-# and add the token as the value
-# when creating the stack, add the token as a parameter with the same name- musa-github-token
-
-# Resources:
-#   CodeBuildProject:
-#     Type: AWS::CodeBuild::Project
-#     Properties:
-#       Artifacts:
-#         Type: CODEPIPELINE
-#       TimeoutInMinutes: 5
-#       Description: CodeBuild project to build
-#       Environment:
-#         ComputeType: BUILD_GENERAL1_SMALL
-#         Image: !Ref CodeBuildImage
-#         Type: LINUX_CONTAINER
-#         EnvironmentVariables:
-#           - Name: ARTIFACTS_BUCKET
-#             Type: PLAINTEXT
-#             Value: !ImportValue ci-core-infra-artifacts-bucket-name
-#       ServiceRole: !ImportValue ci-core-infra-common-codebuild-role-arn
-#       EncryptionKey: "alias/codepipeline-kms-key"
-#       Source:
-#         Type: CODEPIPELINE
-#         BuildSpec: |
-#           version: 0.2
-#           phases:
-#             build:
-#               commands:
-#                 - aws cloudformation package --template-file main.yml --s3-bucket $ARTIFACTS_BUCKET --s3-prefix artifacts/some-lambda --output-template-file main.packaged.yml
-#           artifacts:
-#             files:
-#               - main.packaged.yml
-
-#   CodePipeline:
-#     Type: AWS::CodePipeline::Pipeline
-#     Properties:
-#       ArtifactStore:
-#         Type: S3
-#         Location: !ImportValue ci-core-infra-artifacts-bucket-name
-#         EncryptionKey:
-#           Id: !ImportValue ci-core-infra-artifacts-kms-key-arn
-#           Type: "KMS"
-#       Name: !Ref CodePipelineName
-#       RestartExecutionOnUpdate: true
-#       RoleArn: !ImportValue ci-core-infra-codepipeline-execution-role-arn
-#       Stages:
-#         - Name: Source
-#           Actions:
-#             - ActionTypeId:
-#                 Category: Source
-#                 Owner: AWS
-#                 Version: "1"
-#                 Provider: CodeStarSourceConnection
-#               OutputArtifacts:
-#                 - Name: GitHubSource
-#               RunOrder: 1
-#               Name: Clone-From-GitHub
-#               Configuration:
-#                 ConnectionArn: !Ref CodeStarConnectionArn
-#                 FullRepositoryId: !Ref GitHubRepo
-#                 BranchName: !Ref GitHubBranch
-#         - Name: Build
-#           Actions:
-#             - ActionTypeId:
-#                 Category: Build
-#                 Owner: AWS
-#                 Version: "1"
-#                 Provider: CodeBuild
-#               InputArtifacts:
-#                 - Name: GitHubSource
-#               OutputArtifacts:
-#                 - Name: BuiltSource
-#               Name: Build
-#               Configuration:
-#                 ProjectName: !Ref CodeBuildProject
-#         - Name: Deploy-to-dev
-#           Actions:
-#             - ActionTypeId:
-#                 Category: Deploy
-#                 Owner: AWS
-#                 Version: "1"
-#                 Provider: CloudFormation
-#               InputArtifacts:
-#                 - Name: BuiltSource
-#               Name: Deploy-Lambda
-#               Configuration:
-#                 ActionMode: CREATE_UPDATE
-#                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-#                 StackName: "some-lambda"
-#                 RoleArn: !Sub "arn:aws:iam::${DevAWSAccountID}:role/codepipeline-cloudformation-role"
-#                 TemplatePath: BuiltSource::main.packaged.yml
-#               RoleArn: !Sub "arn:aws:iam::${DevAWSAccountID}:role/codepipeline-role"
-#         - Name: Deploy-to-prod
-#           Actions:
-#             - ActionTypeId:
-#                 Category: Deploy
-#                 Owner: AWS
-#                 Version: "1"
-#                 Provider: CloudFormation
-#               InputArtifacts:
-#                 - Name: BuiltSource
-#               Name: Deploy-Lambda
-#               Configuration:
-#                 ActionMode: CREATE_UPDATE
-#                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-#                 StackName: "some-lambda"
-#                 RoleArn: !Sub "arn:aws:iam::${ProdAWSAccountID}:role/codepipeline-cloudformation-role"
-#                 TemplatePath: BuiltSource::main.packaged.yml
-#               RoleArn: !Sub "arn:aws:iam::${ProdAWSAccountID}:role/codepipeline-role"
