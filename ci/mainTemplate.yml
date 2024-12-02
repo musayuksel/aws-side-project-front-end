@@ -30,7 +30,7 @@ Resources:
         IndexDocument: index.html
         # ErrorDocument: index.html
 
-  # Define an IAM role for Codepipeline to access resources
+  # Define an IAM role for CodePipeline to access resources
   PipelineRole:
     Type: AWS::IAM::Role
     Properties:
@@ -43,7 +43,7 @@ Resources:
                 - codepipeline.amazonaws.com # Allow CodePipeline to assume this role
                 - codebuild.amazonaws.com # Allow CodeBuild to assume this role
             Action: sts:AssumeRole
-      Policies: # Attach policy to the role to allow specific action.
+      Policies: # Attach policies to the role to allow specific actions.
         - PolicyName: CodePipelinePolicy # Name of the policy
           PolicyDocument:
             Version: "2012-10-17"
@@ -65,7 +65,7 @@ Resources:
       Name: musa-website-build-project # Name of the project
       Source:
         Type: GITHUB # Source is Github repository aws repo in musayuksel account
-        Location: !Sub "https://github.com/${RepoOwner}/${RepoName}.git" #https://github.com/musayuksel/aws.git # Create the CodePipeline resource.
+        Location: !Sub "https://github.com/${RepoOwner}/${RepoName}.git" # Use parameters for repo owner and name
       Artifacts:
         Type: S3 # Store the build artifacts in S3
         Location: !Ref S3Bucket # Reference to the S3 bucket created above
@@ -113,6 +113,19 @@ Resources:
                 - Name: SourceOutput # The artifact produced by the source stage
               OutputArtifacts:
                 - Name: BuildOutput # The artifact produced by this stage
+
+        # Manual Approval Stage
+        - Name: Approval
+          Actions:
+            - Name: ManualApprovalAction
+              ActionTypeId:
+                Category: Approval # This is an approval stage
+                Owner: AWS # AWS owns the approval service
+                Provider: Manual # Use Manual approval
+                Version: "1" # Version of the action
+              Configuration:
+                CustomData: "Please review the build output and approve to proceed with deployment."
+              RunOrder: 1
 
         # Deploy Stage: Deploys the built artifact to S3
         - Name: Deploy
