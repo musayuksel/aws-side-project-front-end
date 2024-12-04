@@ -6,7 +6,7 @@ phases:
       - echo "Installing dependencies..........."
       - echo "Node version.....:$(node -v)"
       - echo "NPM version......:$(npm -v)"
-      - npm install # Placeholder for installing dependencies.
+      - npm install
   pre_build:
     commands:
       - echo "Running unit tests..........."
@@ -14,8 +14,7 @@ phases:
   build:
     commands:
       - echo "Building the App..........."
+      - npm run build
 artifacts:
   files:
-    # - "build/**/*"
-    - "**/*" # Specifies all files in the 'build' directory to be included as artifacts.
-  # base-directory: build # Specifies the base directory for the artifacts.
+    - "dist/**/*"
