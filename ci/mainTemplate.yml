@@ -67,8 +67,9 @@ Resources:
         Type: GITHUB # Source is Github repository aws repo in musayuksel account
         Location: !Sub "https://github.com/${RepoOwner}/${RepoName}.git" # Use parameters for repo owner and name
       Artifacts:
-        Type: S3 # Store the build artifacts in S3
-        Location: !Ref S3Bucket # Reference to the S3 bucket created above
+        Type: CODEPIPELINE # Do not produce any artifacts
+        # Type: S3 # Store the build artifacts in S3
+        # Location: !Ref S3Bucket # Reference to the S3 bucket created above
       Environment:
         Type: LINUX_CONTAINER # Use a Linux container for the build
         ComputeType: BUILD_GENERAL1_SMALL # Use a small compute type
