@@ -6,7 +6,7 @@ phases:
       - echo "Installing dependencies..........."
       - echo "Node version.....:$(node -v)"
       - echo "NPM version......:$(npm -v)"
-      - npm install
+      - npm ci
   pre_build:
     commands:
       - echo "Running unit tests..........."
