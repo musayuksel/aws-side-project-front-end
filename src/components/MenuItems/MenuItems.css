@@ -1,0 +1,7 @@
+.menu-items-container {
+  width: 20%;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}

@@ -1,6 +1,8 @@
-import { SideMenu } from "./SideMenu";
-import { mockData } from "../config/promos";
+import { MenuItems } from "../MenuItems";
+import { mockData } from "../../config/promos";
 import { useCallback, useEffect, useRef, useState } from "react";
+import "./CbAppContainer.css";
+import { CategoryFilter } from "../CategoryFilterTabs";
 
 export const CbAppContainer = () => {
   const [focusedSection, setFocusedSection] = useState("promos");
@@ -136,7 +138,6 @@ export const CbAppContainer = () => {
         const [section, indexStr] = hash.substring(1).split("-");
         const index = parseInt(indexStr, 10);
 
-        console.log({ section, index });
         if (section && !isNaN(index)) {
           setFocusedSection(section);
           setFocusedIndex(index);
@@ -175,35 +176,17 @@ export const CbAppContainer = () => {
 
   return (
     <div className="menu-container" tabIndex={0}>
-      <div className="side-menu">
-        {["Item 1", "Item 2", "Item 3"].map((item, index) => (
-          <div
-            key={index}
-            className="menu-item"
-            ref={(element) => setMenuItemRef(element, index)}
-            tabIndex={
-              focusedSection === "sideMenu" && focusedIndex === index ? 0 : -1
-            }
-          >
-            {item}
-          </div>
-        ))}
-      </div>
+      <MenuItems
+        focusedIndex={focusedIndex}
+        setMenuItemRef={setMenuItemRef}
+        focusedSection={focusedSection}
+      />
       <div className="main-content">
-        <div className="tabs">
-          {["Popular", "Sport", "Live"].map((tab, index) => (
-            <a
-              key={index}
-              className="tab"
-              ref={(element) => setTabRef(element, index)}
-              tabIndex={
-                focusedSection === "tabs" && focusedIndex === index ? 0 : -1
-              }
-            >
-              {tab}
-            </a>
-          ))}
-        </div>
+        <CategoryFilter
+          focusedIndex={focusedIndex}
+          setTabRef={setTabRef}
+          focusedSection={focusedSection}
+        />
         <div className="promo-container">
           {promos.map((promo, index) => (
             <a
