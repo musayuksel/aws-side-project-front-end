@@ -1,5 +1,6 @@
 import { menuLinks } from "../../config/menuLinks";
 import "./MenuItems.css";
+import restartIcon from "../../assets/restartIcon.svg";
 
 export const MenuItems = ({ focusedIndex, setMenuItemRef, focusedSection }) => {
   return (
@@ -13,7 +14,12 @@ export const MenuItems = ({ focusedIndex, setMenuItemRef, focusedSection }) => {
             focusedSection === "sideMenu" && focusedIndex === index ? 0 : -1
           }
         >
-          {title}
+          <img
+            src={restartIcon}
+            alt="Restart Icon"
+            className="menu-item-icon"
+          />
+          <span className="title">{title}</span>
         </a>
       ))}
     </nav>

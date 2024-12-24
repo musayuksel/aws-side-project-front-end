@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./CbAppContainer.css";
 import { CategoryFilter } from "../CategoryFilterTabs";
 import { PromosCarousel } from "../PromosCarousel";
+import videoBg from "../../assets/olympics-bg-vid.mp4";
 
 export const CbAppContainer = () => {
   const [focusedSection, setFocusedSection] = useState("promos");
@@ -176,23 +177,38 @@ export const CbAppContainer = () => {
   }, [focusedItem]);
 
   return (
-    <div className="menu-container" tabIndex={0}>
-      <MenuItems
-        focusedIndex={focusedIndex}
-        setMenuItemRef={setMenuItemRef}
-        focusedSection={focusedSection}
-      />
-      <div className="main-content">
-        <CategoryFilter
+    <div className="app-container">
+      <div className="dimmer" />
+      <video
+        playsInline
+        autoPlay
+        muted
+        loop
+        id="bgvid"
+        // width={"100%"}
+        // height={"100vh"}
+        className={"bgvideo"}
+      >
+        <source src={videoBg} type="video/mp4" />
+      </video>
+      <div className="menu-container" tabIndex={0}>
+        <MenuItems
           focusedIndex={focusedIndex}
-          setTabRef={setTabRef}
+          setMenuItemRef={setMenuItemRef}
           focusedSection={focusedSection}
         />
-        <PromosCarousel
-          focusedIndex={focusedIndex}
-          setPromoRef={setPromoRef}
-          focusedSection={focusedSection}
-        />
+        <div className="main-content">
+          <CategoryFilter
+            focusedIndex={focusedIndex}
+            setTabRef={setTabRef}
+            focusedSection={focusedSection}
+          />
+          <PromosCarousel
+            focusedIndex={focusedIndex}
+            setPromoRef={setPromoRef}
+            focusedSection={focusedSection}
+          />
+        </div>
       </div>
     </div>
   );
