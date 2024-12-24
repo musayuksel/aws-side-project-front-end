@@ -22,14 +22,8 @@ code {
 .tab:focus,
 .promo-card:focus {
   color: red;
-  border: 2px solid rgb(215, 6, 6);
-  transform: scale(1.05);
 }
 
 .menu-container {
   display: flex;
-}
-
-.promo-container {
-  background-color: aqua;
 }

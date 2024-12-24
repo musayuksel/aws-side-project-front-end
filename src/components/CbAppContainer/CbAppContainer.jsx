@@ -3,6 +3,7 @@ import { mockData } from "../../config/promos";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./CbAppContainer.css";
 import { CategoryFilter } from "../CategoryFilterTabs";
+import { PromosCarousel } from "../PromosCarousel";
 
 export const CbAppContainer = () => {
   const [focusedSection, setFocusedSection] = useState("promos");
@@ -187,20 +188,11 @@ export const CbAppContainer = () => {
           setTabRef={setTabRef}
           focusedSection={focusedSection}
         />
-        <div className="promo-container">
-          {promos.map((promo, index) => (
-            <a
-              key={promo.id}
-              className="promo-card"
-              ref={(element) => setPromoRef(element, index)}
-              tabIndex={
-                focusedSection === "promos" && focusedIndex === index ? 0 : -1
-              }
-            >
-              {promo.title}
-            </a>
-          ))}
-        </div>
+        <PromosCarousel
+          focusedIndex={focusedIndex}
+          setPromoRef={setPromoRef}
+          focusedSection={focusedSection}
+        />
       </div>
     </div>
   );

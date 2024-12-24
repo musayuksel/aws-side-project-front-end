@@ -1,5 +1,6 @@
 import { menuLinks } from "../../config/menuLinks";
 import "./MenuItems.css";
+
 export const MenuItems = ({ focusedIndex, setMenuItemRef, focusedSection }) => {
   return (
     <nav className="menu-items-container">
