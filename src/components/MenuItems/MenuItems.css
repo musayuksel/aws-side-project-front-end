@@ -11,7 +11,7 @@
   color: #a7a9ab;
 }
 .menu-item {
-  padding: 20px;
+  padding: 20px 0;
   cursor: pointer;
   text-align: left;
 }
