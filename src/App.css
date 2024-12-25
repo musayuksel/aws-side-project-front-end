@@ -20,12 +20,17 @@ code {
     monospace;
 }
 
-.menu-item:focus,
-.tab:focus,
 .promo-card:focus {
   color: red;
 }
 
 .menu-container {
   display: flex;
+}
+
+a,
+a:visited,
+a:active {
+  text-decoration: none;
+  color: inherit;
 }
