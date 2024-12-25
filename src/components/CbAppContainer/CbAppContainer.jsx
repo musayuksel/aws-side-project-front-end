@@ -37,6 +37,8 @@ export const CbAppContainer = () => {
 
   const handleKeyDown = useCallback(
     (event) => {
+      event.preventDefault();
+
       // Check if refs are populated AND if the focused section has elements
       if (
         !menuItemsRef.current ||
@@ -179,24 +181,18 @@ export const CbAppContainer = () => {
   return (
     <div className="app-container">
       <div className="dimmer" />
-      <video
-        playsInline
-        autoPlay
-        muted
-        loop
-        id="bgvid"
-        // width={"100%"}
-        // height={"100vh"}
-        className={"bgvideo"}
-      >
+
+      <video playsInline autoPlay muted loop id="bgvid" className={"bgvideo"}>
         <source src={videoBg} type="video/mp4" />
       </video>
+
       <div className="menu-container" tabIndex={0}>
         <MenuItems
           focusedIndex={focusedIndex}
           setMenuItemRef={setMenuItemRef}
           focusedSection={focusedSection}
         />
+
         <div className="main-content">
           <CategoryFilter
             focusedIndex={focusedIndex}
