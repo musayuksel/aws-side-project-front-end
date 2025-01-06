@@ -20,10 +20,6 @@ code {
     monospace;
 }
 
-.promo-card:focus {
-  color: red;
-}
-
 .menu-container {
   display: flex;
 }
