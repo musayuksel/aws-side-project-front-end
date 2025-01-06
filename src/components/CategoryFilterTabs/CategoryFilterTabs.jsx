@@ -11,7 +11,6 @@ export const CategoryFilter = ({ focusedIndex, setTabRef, focusedSection }) => {
     setActiveTab(tabText);
     window.location.hash = "promos-0";
   };
-  console.log({ activeTab });
 
   return (
     <div className="category-filter-container">

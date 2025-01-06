@@ -10,6 +10,7 @@ export const CbAppContainer = () => {
   const [focusedSection, setFocusedSection] = useState("promos");
   const [focusedIndex, setFocusedIndex] = useState(0); // Initialize focusedIndex
   const [focusedItem, setFocusedItem] = useState(null); // Stores the focused item object
+  const [showContent, setShowContent] = useState(false); // State for showing/hiding content
 
   const menuItemsRef = useRef([]);
   const tabsRef = useRef([]);
@@ -38,6 +39,19 @@ export const CbAppContainer = () => {
   const handleKeyDown = useCallback(
     (event) => {
       event.preventDefault();
+      if (event.key === "r") {
+        setShowContent(true); // Toggle content visibility
+        window.location.hash = "promos-0"; // Reset hash to default
+        return; // Prevent default arrow key behavior when 'r' is pressed
+      }
+
+      if (event.key === "Backspace") {
+        setShowContent(false);
+        window.location.hash = ""; // Reset hash to default
+        return;
+      }
+
+      // if (!showContent) return;
 
       // Check if refs are populated AND if the focused section has elements
       if (
@@ -125,7 +139,7 @@ export const CbAppContainer = () => {
           break;
       }
     },
-    [focusedSection, focusedIndex, promos]
+    [focusedSection, focusedIndex, promos, showContent]
   );
 
   useEffect(() => {
@@ -173,39 +187,41 @@ export const CbAppContainer = () => {
 
   useEffect(() => {
     // Focus the element AFTER state updates
-    if (focusedItem) {
+    if (focusedItem && showContent) {
       focusedItem.focus();
     }
-  }, [focusedItem]);
+  }, [focusedItem, showContent]);
 
   return (
     <div className="app-container">
-      <div className="dimmer" />
-
       <video playsInline autoPlay muted loop id="bgvid" className={"bgvideo"}>
         <source src={videoBg} type="video/mp4" />
       </video>
+      {showContent && (
+        <>
+          <div className="dimmer" />
+          <div className="menu-container" tabIndex={0}>
+            <MenuItems
+              focusedIndex={focusedIndex}
+              setMenuItemRef={setMenuItemRef}
+              focusedSection={focusedSection}
+            />
 
-      <div className="menu-container" tabIndex={0}>
-        <MenuItems
-          focusedIndex={focusedIndex}
-          setMenuItemRef={setMenuItemRef}
-          focusedSection={focusedSection}
-        />
-
-        <div className="main-content">
-          <CategoryFilter
-            focusedIndex={focusedIndex}
-            setTabRef={setTabRef}
-            focusedSection={focusedSection}
-          />
-          <PromosCarousel
-            focusedIndex={focusedIndex}
-            setPromoRef={setPromoRef}
-            focusedSection={focusedSection}
-          />
-        </div>
-      </div>
+            <div className="main-content">
+              <CategoryFilter
+                focusedIndex={focusedIndex}
+                setTabRef={setTabRef}
+                focusedSection={focusedSection}
+              />
+              <PromosCarousel
+                focusedIndex={focusedIndex}
+                setPromoRef={setPromoRef}
+                focusedSection={focusedSection}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
