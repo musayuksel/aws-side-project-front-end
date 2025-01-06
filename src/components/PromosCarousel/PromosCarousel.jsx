@@ -10,7 +10,7 @@ export const PromosCarousel = ({
 
   return (
     <section className="promo-container">
-      {promos.map(({ id, title }, index) => (
+      {promos.map(({ id, title, subtitle, image }, index) => (
         <a
           key={id}
           className="promo-card"
@@ -19,7 +19,13 @@ export const PromosCarousel = ({
             focusedSection === "promos" && focusedIndex === index ? 0 : -1
           }
         >
-          {title}
+          <section className="preview-container">
+            <img src={image} alt={title} />
+          </section>
+          <section className="footer">
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
+          </section>
         </a>
       ))}
     </section>

@@ -169,7 +169,7 @@ export const CbAppContainer = () => {
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
     };
-  }, []); // Empty dependency array to run only on mount/unmount
+  }, []);
 
   useEffect(() => {
     // Focus the element AFTER state updates

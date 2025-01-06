@@ -1,3 +1,21 @@
 .promo-container {
   /* background-color: aqua; */
+  display: flex;
+  gap: 16px;
+  width: 358px;
+  height: 256px;
+}
+
+.promo-container .preview-container {
+  height: 144px;
+  width: 256px;
+}
+.preview-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promo-container .footer {
+  font-size: 12px;
 }

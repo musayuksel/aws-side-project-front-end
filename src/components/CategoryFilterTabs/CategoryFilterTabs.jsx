@@ -4,11 +4,12 @@ import "./CategoryFilterTabs.css";
 const categories = ["Most Popular", "Sport", "Live"];
 
 export const CategoryFilter = ({ focusedIndex, setTabRef, focusedSection }) => {
-  const [activeTab, setActiveTab] = useState(focusedIndex || 0);
+  const [activeTab, setActiveTab] = useState(categories[0]);
 
   const handleClick = (event, tabText) => {
     event.preventDefault();
     setActiveTab(tabText);
+    window.location.hash = "promos-0";
   };
   console.log({ activeTab });
 
