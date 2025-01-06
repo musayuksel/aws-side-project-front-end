@@ -1,7 +1,9 @@
 .promo-container {
-  /* background-color: aqua; */
   display: flex;
   gap: 16px;
+  width: 100%;
+}
+.promo-container .promo-card {
   width: 358px;
   height: 256px;
 }
