@@ -1,11 +1,14 @@
 import { useState } from "react";
 import "./CategoryFilterTabs.css";
 
-const categories = ["Most Popular", "Sport", "Live"];
-
-export const CategoryFilter = ({ focusedIndex, setTabRef, focusedSection }) => {
-  const [activeTab, setActiveTab] = useState(categories[0]);
-
+export const CategoryFilter = ({
+  focusedIndex,
+  setTabRef,
+  focusedSection,
+  activeTab,
+  setActiveTab,
+  categories,
+}) => {
   const handleClick = (event, tabText) => {
     event.preventDefault();
     setActiveTab(tabText);

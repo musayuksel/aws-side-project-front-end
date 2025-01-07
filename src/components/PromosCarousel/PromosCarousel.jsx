@@ -5,8 +5,11 @@ export const PromosCarousel = ({
   focusedIndex,
   setPromoRef,
   focusedSection,
+  activeTab,
 }) => {
-  const promos = mockData.promoted;
+  const promos = mockData.promoted.filter((promo) =>
+    promo.categories?.includes(activeTab)
+  );
 
   return (
     <section className="promo-container">

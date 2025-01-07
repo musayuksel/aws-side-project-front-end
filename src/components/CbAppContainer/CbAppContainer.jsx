@@ -6,11 +6,14 @@ import { CategoryFilter } from "../CategoryFilterTabs";
 import { PromosCarousel } from "../PromosCarousel";
 import videoBg from "../../assets/olympics-bg-vid.mp4";
 
+const categories = ["Most Popular", "Sport", "Films"];
+
 export const CbAppContainer = () => {
   const [focusedSection, setFocusedSection] = useState("promos");
   const [focusedIndex, setFocusedIndex] = useState(0); // Initialize focusedIndex
   const [focusedItem, setFocusedItem] = useState(null); // Stores the focused item object
   const [showContent, setShowContent] = useState(false); // State for showing/hiding content
+  const [activeTab, setActiveTab] = useState(categories[0]);
 
   const menuItemsRef = useRef([]);
   const tabsRef = useRef([]);
@@ -212,11 +215,15 @@ export const CbAppContainer = () => {
                 focusedIndex={focusedIndex}
                 setTabRef={setTabRef}
                 focusedSection={focusedSection}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                categories={categories}
               />
               <PromosCarousel
                 focusedIndex={focusedIndex}
                 setPromoRef={setPromoRef}
                 focusedSection={focusedSection}
+                activeTab={activeTab}
               />
             </div>
           </div>
