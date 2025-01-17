@@ -1,5 +1,6 @@
 export const mockData = {
   stat: { name: "connected_bridge" },
+  channel: "bbc_scotland",
   promoted: [
     {
       id: "p0db9b2t",

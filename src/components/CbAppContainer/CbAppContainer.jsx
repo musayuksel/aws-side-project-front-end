@@ -19,7 +19,22 @@ export const CbAppContainer = () => {
   const tabsRef = useRef([]);
   const promosRef = useRef([]);
 
-  const promos = mockData.promoted;
+  // move this into a custom hook
+  const getPromos = async () => {
+    const response = await fetch(
+      "https://z54uu6fx6e.execute-api.eu-west-1.amazonaws.com/Prod/promos?channel=bbc_scotland"
+    );
+    return await response.json();
+  };
+
+  const [promoData, setPromoData] = useState([]);
+  useEffect(() => {
+    getPromos().then((data) => {
+      setPromoData(data);
+    });
+  }, []);
+
+  const promos = promoData.promoted;
   // Update URL hash whenever focusedSection or focusedIndex changes
   useEffect(() => {
     if (!focusedItem) return;
