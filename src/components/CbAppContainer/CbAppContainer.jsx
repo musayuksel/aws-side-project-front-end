@@ -5,6 +5,7 @@ import "./CbAppContainer.css";
 import { CategoryFilter } from "../CategoryFilterTabs";
 import { PromosCarousel } from "../PromosCarousel";
 import videoBg from "../../assets/olympics-bg-vid.mp4";
+import { usePromos } from "../../hooks/usePromos";
 
 const categories = ["Most Popular", "Sport", "Films"];
 
@@ -19,20 +20,9 @@ export const CbAppContainer = () => {
   const tabsRef = useRef([]);
   const promosRef = useRef([]);
 
-  // move this into a custom hook
-  const getPromos = async () => {
-    const response = await fetch(
-      "https://z54uu6fx6e.execute-api.eu-west-1.amazonaws.com/Prod/promos?channel=bbc_scotland"
-    );
-    return await response.json();
-  };
-
-  const [promoData, setPromoData] = useState([]);
-  useEffect(() => {
-    getPromos().then((data) => {
-      setPromoData(data);
-    });
-  }, []);
+  const { promoData, loading, error } = usePromos("bbc_scotland");
+  // if (loading) return <p>Loading promos...</p>;
+  // if (error) return <p>Error: {error.message}</p>;
 
   const promos = promoData.promoted;
   // Update URL hash whenever focusedSection or focusedIndex changes
