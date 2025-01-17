@@ -13,8 +13,8 @@
 }
 
 .tab:focus {
-  background-color: #a7a9ab48;
+  border-color: #f9f9f9;
 }
 .category-filter-container .tab.active {
-  border-color: #f9f9f9;
+  background-color: #a7a9ab48;
 }
