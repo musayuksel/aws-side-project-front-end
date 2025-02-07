@@ -9,7 +9,9 @@
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "ci:pipeline": "cd ci/scripts && sh update-ci-pipeline.sh",
+    "ci:pipeline-delete": "cd ci/scripts && sh delete-ci-pipeline.sh"
   },
   "dependencies": {
     "react": "^18.3.0",
