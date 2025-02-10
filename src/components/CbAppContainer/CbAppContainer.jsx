@@ -16,6 +16,8 @@ export const CbAppContainer = () => {
   const [showContent, setShowContent] = useState(false); // State for showing/hiding content
   const [activeTab, setActiveTab] = useState(categories[0]);
 
+  const [menuVisible, setMenuVisible] = useState(false);
+
   const menuItemsRef = useRef([]);
   const tabsRef = useRef([]);
   const promosRef = useRef([]);
@@ -24,7 +26,7 @@ export const CbAppContainer = () => {
   // if (loading) return <p>Loading promos...</p>;
   // if (error) return <p>Error: {error.message}</p>;
 
-  const promos = promoData.promoted;
+  const promos = mockData.promoted;
   // Update URL hash whenever focusedSection or focusedIndex changes
   useEffect(() => {
     if (!focusedItem) return;
@@ -49,12 +51,14 @@ export const CbAppContainer = () => {
       event.preventDefault();
       if (event.key === "r") {
         setShowContent(true); // Toggle content visibility
+        setTimeout(() => setMenuVisible(true), 0); // Then trigger transition (important!)
         window.location.hash = "promos-0"; // Reset hash to default
         return; // Prevent default arrow key behavior when 'r' is pressed
       }
 
       if (event.key === "Backspace") {
-        setShowContent(false);
+        setMenuVisible(false); //
+        setTimeout(() => setShowContent(false), 500); // Hide content after transition
         window.location.hash = ""; // Reset hash to default
         return;
       }
@@ -203,12 +207,15 @@ export const CbAppContainer = () => {
   return (
     <div className="app-container">
       <video playsInline autoPlay muted loop id="bgvid" className={"bgvideo"}>
-        <source src={videoBg} type="video/mp4" />
+        {/* <source src={videoBg} type="video/mp4" /> */}
       </video>
       {showContent && (
         <>
           <div className="dimmer" />
-          <div className="menu-container" tabIndex={0}>
+          <div
+            className={`menu-container ${menuVisible ? "slide-in" : ""}`}
+            tabIndex={0}
+          >
             <MenuItems
               focusedIndex={focusedIndex}
               setMenuItemRef={setMenuItemRef}
