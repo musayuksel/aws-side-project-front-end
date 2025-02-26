@@ -16,6 +16,7 @@ phases:
       - echo "Listing dist directory"
       - ls -la dist
       - pwd
+      - echo "$CODEBUILD_SRC_DIR_BuildOutput"
 artifacts:
   files:
     - "**/*"

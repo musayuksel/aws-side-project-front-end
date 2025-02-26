@@ -19,12 +19,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo "Installing AWS CLI..."
-      - apt-get update && apt-get install -y awscli
-
-  build:
-    commands:
-      - echo "Deploying to S3..."
-      - aws s3 sync dist s3://musa-website-test-bucket-123123 --delete
+      - echo "$CODEBUILD_SRC_DIR_BuildOutput"
+      - aws s3 sync $CODEBUILD_SRC_DIR_BuildOutput s3://musa-website-test-bucket-123123 --delete
       - echo "Deployment successful!"
 
