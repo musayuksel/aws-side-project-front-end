@@ -8,10 +8,12 @@ phases:
       - ls -la
       - echo "Listing the content of the CODEBUILD_SRC_DIR"
       - ls -la $CODEBUILD_SRC_DIR
-      - echo "Listing the content of the source subdirectory"
-      - ls -la $CODEBUILD_SRC_DIR/s3/00/src
-      - echo "Checking for BuildOutput"
+      - echo "Finding BuildOutput directory"
       - find $CODEBUILD_SRC_DIR -name "BuildOutput"
+      - echo "Finding all directories"
+      - find $CODEBUILD_SRC_DIR -type d
+      - echo "Finding all files"
+      - find $CODEBUILD_SRC_DIR -type f
       - echo "Deploy phase, attempting to find and deploy artifacts"
       - ARTIFACT_DIR=$(find $CODEBUILD_SRC_DIR -name "BuildOutput")
       - if [ -n "$ARTIFACT_DIR" ]; then
