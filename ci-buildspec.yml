@@ -13,6 +13,8 @@ phases:
     commands:
       - echo "Building the App..........."
       - npm run build
+      - echo "Listing dist directory"
+      - ls -la dist
 artifacts:
   files:
     - "**/*"
