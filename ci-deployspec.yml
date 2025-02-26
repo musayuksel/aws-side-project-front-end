@@ -3,6 +3,9 @@ version: 0.2
 phases:
   build:
     commands:
+      - echo "Listing directories to find build files"
+      - ls -la
+      - find . -type d | sort
       - echo "Deploy phase, sending artifact to S3"
-      - aws s3 sync ../BuildOutput/ s3://musa-website-test-bucket-123123/ --delete
+      - aws s3 sync dist/ s3://musa-website-test-bucket-123123/ --delete || aws s3 sync build/ s3://musa-website-test-bucket-123123/ --delete
       - echo "Deployment to S3 complete"
