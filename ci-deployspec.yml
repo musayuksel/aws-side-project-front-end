@@ -6,21 +6,12 @@ phases:
       - echo "Debugging directory structure"
       - pwd
       - ls -la
-      - echo "Listing the content of the CODEBUILD_SRC_DIR"
-      - ls -la $CODEBUILD_SRC_DIR
-      - echo "Finding BuildOutput directory"
-      - find $CODEBUILD_SRC_DIR -name "BuildOutput"
-      - echo "Finding all directories"
-      - find $CODEBUILD_SRC_DIR -type d
-      - echo "Finding all files"
-      - find $CODEBUILD_SRC_DIR -type f
-      - echo "Deploy phase, attempting to find and deploy artifacts"
-      - ARTIFACT_DIR=$(find $CODEBUILD_SRC_DIR -name "BuildOutput")
-      - if [ -n "$ARTIFACT_DIR" ]; then
-          echo "Found artifacts at $ARTIFACT_DIR";
-          aws s3 sync $ARTIFACT_DIR/ s3://musa-website-test-bucket-123123/ --delete;
-        else
-          echo "ERROR - Could not locate build artifacts";
-          exit 1;
-        fi
-      - echo "Deployment to S3 complete"
+      - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
+      - aws s3 ls s3://$CODEBUILD_SRC_DIR_BuildOutput --recursive
+      - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
+      - aws s3 cp s3://$CODEBUILD_SRC_DIR_BuildOutput ./ --recursive
+      - ls -la
+      - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
+      - ls -la BuildOutput
+
+    
