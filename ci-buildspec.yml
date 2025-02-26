@@ -15,6 +15,7 @@ phases:
       - npm run build
       - echo "Listing dist directory"
       - ls -la dist
+      - pwd
 artifacts:
   files:
     - "**/*"

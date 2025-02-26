@@ -1,17 +1,30 @@
+# version: 0.2
+
+# phases:
+#   build:
+#     commands:
+#       - echo "Debugging directory structure"
+#       - pwd
+#       - ls -la
+#       - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
+#       - aws s3 ls s3://$CODEBUILD_SRC_DIR_BuildOutput --recursive
+#       - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
+#       - aws s3 cp s3://$CODEBUILD_SRC_DIR_BuildOutput ./ --recursive
+#       - ls -la
+#       - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
+#       - ls -la BuildOutput
+
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo "Installing AWS CLI..."
+      - apt-get update && apt-get install -y awscli
+
   build:
     commands:
-      - echo "Debugging directory structure"
-      - pwd
-      - ls -la
-      - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
-      - aws s3 ls s3://$CODEBUILD_SRC_DIR_BuildOutput --recursive
-      - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
-      - aws s3 cp s3://$CODEBUILD_SRC_DIR_BuildOutput ./ --recursive
-      - ls -la
-      - echo "Listing the content of the  $CODEBUILD_SRC_DIR_BuildOutput in the s3"
-      - ls -la BuildOutput
+      - echo "Deploying to S3..."
+      - aws s3 sync dist s3://musa-website-test-bucket-123123 --delete
+      - echo "Deployment successful!"
 
-    
