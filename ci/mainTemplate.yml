@@ -260,7 +260,6 @@ Resources:
                   - codestar-connections:UseConnection
                 Resource: "*" 
   
-#  same code build with my custom environment variables 
   CodeBuildDevice:
     Type: AWS::CodeBuild::Project
     Properties:
