@@ -1,0 +1,20 @@
+version: 0.2 # Specifies the version of the Buildspec file format.
+
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..........."
+      - npm ci
+  pre_build:
+    commands:
+      - echo "Running unit tests..........."
+      - npm run test
+  build:
+    commands:
+      - echo "Building the App..........."
+      - npm run build
+artifacts:
+  files:
+    - "**/*"
+  base-directory: "dist"
+  name: BuildOutput
