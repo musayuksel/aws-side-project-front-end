@@ -3,4 +3,6 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Deploy phase ,sending artifact to S3"
+      - echo "Deploy phase, sending artifact to S3"
+      - aws s3 sync ../BuildOutput/ s3://musa-website-test-bucket-123123/ --delete
+      - echo "Deployment to S3 complete"
