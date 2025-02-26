@@ -151,9 +151,6 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: musa-website-test-bucket-123123
-      WebsiteConfiguration:
-        IndexDocument: index.html
-
 
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
