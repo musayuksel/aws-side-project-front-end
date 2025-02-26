@@ -3,9 +3,16 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "Listing directories to find build files"
+      - echo "Debugging directory structure"
       - ls -la
-      - find . -type d | sort
-      - echo "Deploy phase, sending artifact to S3"
-      - aws s3 sync dist/ s3://musa-website-test-bucket-123123/ --delete || aws s3 sync build/ s3://musa-website-test-bucket-123123/ --delete
+      - find / -name "BuildOutput" 2>/dev/null || echo "BuildOutput not found"
+      - echo "Deploy phase, attempting to find and deploy artifacts"
+      - ARTIFACT_DIR=$(find / -name "BuildOutput" -type d 2>/dev/null | head -1)
+      - if [ -n "$ARTIFACT_DIR" ]; then
+          echo "Found artifacts at $ARTIFACT_DIR";
+          aws s3 sync $ARTIFACT_DIR/ s3://musa-website-test-bucket-123123/ --delete;
+        else
+          echo "ERROR - Could not locate build artifacts";
+          exit 1;
+        fi
       - echo "Deployment to S3 complete"
