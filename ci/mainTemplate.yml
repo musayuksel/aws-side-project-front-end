@@ -1,37 +1,239 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: Creates a test pipeline to build and deploy a website.
+# AWSTemplateFormatVersion: "2010-09-09"
+# Description: Creates a test pipeline to build and deploy a website.
 
-Parameters:
-  GitHubToken:
-    Type: String
-    Description: "The GitHub OAuth token"
-    NoEcho: true # This hides the parameter value in the AWS Management Console
-    # AWS secrets manager is a better place to store secrets.
-  RepoName:
-    Type: String
-    Description: "The name of the GitHub repository"
-    Default: "aws"
-  RepoOwner:
-    Type: String
-    Description: "The owner of the GitHub repository"
-    Default: "musayuksel"
-  BranchName:
-    Type: String
-    Default: "main"
-    Description: "The branch of the GitHub repository"
+# Parameters:
+#   GitHubToken:
+#     Type: String
+#     Description: "The GitHub OAuth token"
+#     NoEcho: true # This hides the parameter value in the AWS Management Console
+#     # AWS secrets manager is a better place to store secrets.
+#   RepoName:
+#     Type: String
+#     Description: "The name of the GitHub repository"
+#     Default: "aws"
+#   RepoOwner:
+#     Type: String
+#     Description: "The owner of the GitHub repository"
+#     Default: "musayuksel"
+#   BranchName:
+#     Type: String
+#     Default: "main"
+#     Description: "The branch of the GitHub repository"
+
+# Resources:
+#   # Create an S3 bucket to store website files and pipeline artifacts.
+#   S3Bucket:
+#     Type: AWS::S3::Bucket
+#     Properties:
+#       BucketName: musa-website-test-bucket-123123
+#       WebsiteConfiguration:
+#         IndexDocument: index.html
+#         # ErrorDocument: index.html
+
+#   # Define an IAM role for CodePipeline to access resources
+#   PipelineRole:
+#     Type: AWS::IAM::Role
+#     Properties:
+#       AssumeRolePolicyDocument: # Which AWS services can assume this role
+#         Version: "2012-10-17"
+#         Statement:
+#           - Effect: Allow
+#             Principal:
+#               Service:
+#                 - codepipeline.amazonaws.com # Allow CodePipeline to assume this role
+#                 - codebuild.amazonaws.com # Allow CodeBuild to assume this role
+#             Action: sts:AssumeRole
+#       Policies: # Attach policies to the role to allow specific actions.
+#         - PolicyName: CodePipelinePolicy # Name of the policy
+#           PolicyDocument:
+#             Version: "2012-10-17"
+#             Statement:
+#               - Effect: Allow
+#                 Action:
+#                   - s3:* # Allow all actions on S3
+#                   - codebuild:* # Allow all actions on CodeBuild
+#                   - codepipeline:* # Allow all actions on CodePipeline
+#                   - secretsmanager:GetSecretValue # Allow access to Secrets Manager
+#                   - iam:PassRole # Allow passing roles to other services
+#                   - logs:* # Allow all actions on CloudWatch Logs
+#                 Resource: "*" # Allow access to all resources
+
+#   # Create a CodeBuild project to build the website.
+#   CodeBuildProject:
+#     Type: AWS::CodeBuild::Project
+#     Properties:
+#       Name: musa-website-build-project # Name of the project
+#       Source:
+#         Type: GITHUB # Source is Github repository aws repo in musayuksel account
+#         Location: !Sub "https://github.com/${RepoOwner}/${RepoName}.git" # Use parameters for repo owner and name
+#       Artifacts:
+#         Type: NO_ARTIFACTS # Do not produce any artifacts
+#         # Type: S3 # Store the build artifacts in S3
+#         # Location: !Ref S3Bucket # Reference to the S3 bucket created above
+#       Environment:
+#         Type: LINUX_CONTAINER # Use a Linux container for the build
+#         ComputeType: BUILD_GENERAL1_SMALL # Use a small compute type
+#         Image: aws/codebuild/standard:6.0 # Standard build environment image
+#       ServiceRole: !GetAtt PipelineRole.Arn # Use the IAM role created above
+
+#   # Create a CodePipeline to automate the build and deployment process.
+#   CodePipeline:
+#     Type: AWS::CodePipeline::Pipeline
+#     Properties:
+#       RoleArn: !GetAtt PipelineRole.Arn # Links the IAM role created above to the pipeline.
+#       Stages:
+#         # Pulls code from Github
+#         - Name: Source
+#           Actions:
+#             - Name: SourceAction # Name of the action in this stage
+#               ActionTypeId:
+#                 Category: Source # This is a source stage
+#                 Owner: ThirdParty # Github is a third party service
+#                 Provider: GitHub # Source repository is Github
+#                 Version: "1" # Version of the action
+#               Configuration:
+#                 Owner: !Ref RepoOwner
+#                 Repo: !Ref RepoName
+#                 Branch: !Ref BranchName
+#                 OAuthToken: !Ref GitHubToken
+#               OutputArtifacts:
+#                 - Name: SourceOutput # The artifact produced by this stage
+
+#         # Builds stage - Use CodeBuild to build the website
+#         - Name: Build
+#           Actions:
+#             - Name: BuildAction # Name of the build action
+#               ActionTypeId:
+#                 Category: Build # This is a build stage
+#                 Owner: AWS # AWS owns the build service
+#                 Provider: CodeBuild # Use CodeBuild as the build service
+#                 Version: "1" # Version of the action
+#               Configuration:
+#                 ProjectName: !Ref CodeBuildProject # Reference to the CodeBuild project
+#               InputArtifacts:
+#                 - Name: SourceOutput # The artifact produced by the source stage
+#               OutputArtifacts:
+#                 - Name: BuildOutput # The artifact produced by this stage
+
+#         # Manual Approval Stage
+#         - Name: Approval
+#           Actions:
+#             - Name: ManualApprovalAction
+#               ActionTypeId:
+#                 Category: Approval # This is an approval stage
+#                 Owner: AWS # AWS owns the approval service
+#                 Provider: Manual # Use Manual approval
+#                 Version: "1" # Version of the action
+#               Configuration:
+#                 CustomData: "Please review the build output and approve to proceed with deployment."
+#               RunOrder: 1
+
+#         # Deploy Stage: Deploys the built artifact to S3
+#         - Name: Deploy
+#           Actions:
+#             - Name: DeployAction # Name of the deploy action
+#               ActionTypeId:
+#                 Category: Deploy # This is a deploy stage
+#                 Owner: AWS # AWS owns the deploy service
+#                 Provider: S3 # Use S3 as the deploy service
+#                 Version: "1" # Version of the action
+#               Configuration:
+#                 BucketName: !Ref S3Bucket # Reference to the S3 bucket
+#                 Extract: "true" # Extract the artifact before deploying
+#               InputArtifacts:
+#                 - Name: BuildOutput # The artifact produced by the build stage
+#       ArtifactStore:
+#         Type: S3 # Store the pipeline artifacts in S3
+#         Location: !Ref S3Bucket # Reference to the S3 bucket created above
 
 Resources:
-  # Create an S3 bucket to store website files and pipeline artifacts.
-  S3Bucket:
+  MockS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: musa-website-test-bucket-123123
       WebsiteConfiguration:
         IndexDocument: index.html
-        # ErrorDocument: index.html
 
-  # Define an IAM role for CodePipeline to access resources
-  PipelineRole:
+
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: musa-front-end-pipeline
+      RoleArn: !GetAtt CodeBuildRole.Arn
+      RestartExecutionOnUpdate: true
+      ArtifactStore:
+        Type: S3
+        Location: !Ref MockS3Bucket
+
+      Stages:
+        -
+          Name: Source
+          Actions:
+            -
+              Name: Clone-From-GitHub
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: "1"
+                Provider: CodeStarSourceConnection
+              OutputArtifacts:
+                - Name: GitHubSource
+              Namespace: SourceVariables
+              RunOrder: 1
+              Configuration:
+                FullRepositoryId: "musayuksel/aws-side-project-front-end" 
+                BranchName: main
+                ConnectionArn: arn:aws:codeconnections:eu-west-1:749144762306:connection/eb9218a5-7ef1-4bde-b7d2-15c98a33ec2d
+
+        -
+          Name: Build
+          Actions:
+            -
+              RunOrder: 1
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: GitHubSource
+              OutputArtifacts:
+                - Name: BuildOutput
+              Name: Build
+              Configuration:
+                ProjectName: !Ref CodeBuildDevice
+                EnvironmentVariables: '[{ "name": "DEVICE", "value": "TEST"}]'
+
+            -
+              Name: ApproveDeploy
+              RunOrder: 2
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Version: '1'
+                Provider: Manual
+              InputArtifacts: [] 
+
+            -
+              RunOrder: 3
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              InputArtifacts:
+                - Name: GitHubSource
+                - Name: BuildOutput
+              OutputArtifacts:
+                - Name: test-BuildOutput
+              Name: DeployTest
+              Configuration:
+                ProjectName: !Ref CodeBuildDeploy
+                EnvironmentVariables: '[{"name": "ENVIRONMENT", "value": "test"}]'
+                PrimarySource: GitHubSource
+
+
+  CodeBuildRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument: # Which AWS services can assume this role
@@ -40,8 +242,8 @@ Resources:
           - Effect: Allow
             Principal:
               Service:
-                - codepipeline.amazonaws.com # Allow CodePipeline to assume this role
-                - codebuild.amazonaws.com # Allow CodeBuild to assume this role
+                - codepipeline.amazonaws.com 
+                - codebuild.amazonaws.com 
             Action: sts:AssumeRole
       Policies: # Attach policies to the role to allow specific actions.
         - PolicyName: CodePipelinePolicy # Name of the policy
@@ -50,98 +252,41 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - s3:* # Allow all actions on S3
-                  - codebuild:* # Allow all actions on CodeBuild
-                  - codepipeline:* # Allow all actions on CodePipeline
-                  - secretsmanager:GetSecretValue # Allow access to Secrets Manager
-                  - iam:PassRole # Allow passing roles to other services
-                  - logs:* # Allow all actions on CloudWatch Logs
-                Resource: "*" # Allow access to all resources
-
-  # Create a CodeBuild project to build the website.
-  CodeBuildProject:
+                  - s3:*
+                  - codebuild:* 
+                  - codepipeline:*
+                  - iam:PassRole 
+                  - logs:* 
+                  - codestar-connections:UseConnection
+                Resource: "*" 
+  
+#  same code build with my custom environment variables 
+  CodeBuildDevice:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: musa-website-build-project # Name of the project
-      Source:
-        Type: GITHUB # Source is Github repository aws repo in musayuksel account
-        Location: !Sub "https://github.com/${RepoOwner}/${RepoName}.git" # Use parameters for repo owner and name
       Artifacts:
-        Type: NO_ARTIFACTS # Do not produce any artifacts
-        # Type: S3 # Store the build artifacts in S3
-        # Location: !Ref S3Bucket # Reference to the S3 bucket created above
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 5
       Environment:
-        Type: LINUX_CONTAINER # Use a Linux container for the build
-        ComputeType: BUILD_GENERAL1_SMALL # Use a small compute type
-        Image: aws/codebuild/standard:6.0 # Standard build environment image
-      ServiceRole: !GetAtt PipelineRole.Arn # Use the IAM role created above
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:6.0
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: ci-buildspec.yml
 
-  # Create a CodePipeline to automate the build and deployment process.
-  CodePipeline:
-    Type: AWS::CodePipeline::Pipeline
+  CodeBuildDeploy:
+    Type: AWS::CodeBuild::Project
     Properties:
-      RoleArn: !GetAtt PipelineRole.Arn # Links the IAM role created above to the pipeline.
-      Stages:
-        # Pulls code from Github
-        - Name: Source
-          Actions:
-            - Name: SourceAction # Name of the action in this stage
-              ActionTypeId:
-                Category: Source # This is a source stage
-                Owner: ThirdParty # Github is a third party service
-                Provider: GitHub # Source repository is Github
-                Version: "1" # Version of the action
-              Configuration:
-                Owner: !Ref RepoOwner
-                Repo: !Ref RepoName
-                Branch: !Ref BranchName
-                OAuthToken: !Ref GitHubToken
-              OutputArtifacts:
-                - Name: SourceOutput # The artifact produced by this stage
-
-        # Builds stage - Use CodeBuild to build the website
-        - Name: Build
-          Actions:
-            - Name: BuildAction # Name of the build action
-              ActionTypeId:
-                Category: Build # This is a build stage
-                Owner: AWS # AWS owns the build service
-                Provider: CodeBuild # Use CodeBuild as the build service
-                Version: "1" # Version of the action
-              Configuration:
-                ProjectName: !Ref CodeBuildProject # Reference to the CodeBuild project
-              InputArtifacts:
-                - Name: SourceOutput # The artifact produced by the source stage
-              OutputArtifacts:
-                - Name: BuildOutput # The artifact produced by this stage
-
-        # Manual Approval Stage
-        - Name: Approval
-          Actions:
-            - Name: ManualApprovalAction
-              ActionTypeId:
-                Category: Approval # This is an approval stage
-                Owner: AWS # AWS owns the approval service
-                Provider: Manual # Use Manual approval
-                Version: "1" # Version of the action
-              Configuration:
-                CustomData: "Please review the build output and approve to proceed with deployment."
-              RunOrder: 1
-
-        # Deploy Stage: Deploys the built artifact to S3
-        - Name: Deploy
-          Actions:
-            - Name: DeployAction # Name of the deploy action
-              ActionTypeId:
-                Category: Deploy # This is a deploy stage
-                Owner: AWS # AWS owns the deploy service
-                Provider: S3 # Use S3 as the deploy service
-                Version: "1" # Version of the action
-              Configuration:
-                BucketName: !Ref S3Bucket # Reference to the S3 bucket
-                Extract: "true" # Extract the artifact before deploying
-              InputArtifacts:
-                - Name: BuildOutput # The artifact produced by the build stage
-      ArtifactStore:
-        Type: S3 # Store the pipeline artifacts in S3
-        Location: !Ref S3Bucket # Reference to the S3 bucket created above
+      Artifacts:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 5
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:6.0
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: ci-deployspec.yml
