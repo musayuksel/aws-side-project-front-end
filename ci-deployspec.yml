@@ -4,6 +4,9 @@ phases:
   install:
     commands:
       - echo "$CODEBUILD_SRC_DIR_BuildOutput"
-      - aws s3 sync $CODEBUILD_SRC_DIR_BuildOutput s3://musa-website-test-bucket-123123 --delete
+      - aws s3 rm s3://musa-website-test-bucket-123123/index.html
+      - aws s3 rm s3://musa-website-test-bucket-123123/assets --recursive
+      - aws s3 sync $CODEBUILD_SRC_DIR_BuildOutput s3://musa-website-test-bucket-123123
+
       - echo "Deployment successful!"
 

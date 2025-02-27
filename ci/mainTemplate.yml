@@ -155,7 +155,7 @@ Resources:
   CodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: musa-front-end-pipeline
+      Name: musa-frontend-pipeline
       RoleArn: !GetAtt CodeBuildRole.Arn
       RestartExecutionOnUpdate: true
       ArtifactStore:
