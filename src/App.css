@@ -1,32 +1,23 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-*:focus {
-  outline: none;
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 
-body {
-  margin: 0;
-  font-family: "ReithSans", "Halvetica Neue", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #ebebeb;
+.loginForm {
+  min-width: 18em;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+.smallButton {
+  font-size: 0.8em;
 }
 
-.menu-container {
-  display: flex;
+.inputText {
+  font-size: 1.3em;
+  width: 100%;
 }
 
-a,
-a:visited,
-a:active {
-  text-decoration: none;
-  color: inherit;
+button {
+  margin: 0.5em;
 }
