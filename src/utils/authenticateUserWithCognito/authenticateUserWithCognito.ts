@@ -1,5 +1,5 @@
 import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
-import { config } from '../aws_config';
+import { config } from '../../aws_config';
 import { AuthenticateUserWithCognitoArgsTypes, AuthenticateUserWithCognitoSetTokenTypes } from './authenticateUserWithCognito.types';
 
 export const authenticateUserWithCognito = (
