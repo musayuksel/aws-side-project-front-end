@@ -1,1 +1,1 @@
-export * from "./authenticateUserWithCognito"
+export * from './authenticateUserWithCognito';

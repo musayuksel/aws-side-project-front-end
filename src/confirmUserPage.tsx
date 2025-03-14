@@ -1,23 +1,23 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import type React from "react";
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { confirmSignUp } from "./authService";
+import type React from 'react';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { confirmSignUp } from './authService';
 
 const ConfirmUserPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = useState(location.state?.email || "");
-  const [confirmationCode, setConfirmationCode] = useState("");
+  const [email, setEmail] = useState(location.state?.email || '');
+  const [confirmationCode, setConfirmationCode] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await confirmSignUp(email, confirmationCode);
-      alert("Account confirmed successfully!\nSign in on next page.");
-      navigate("/login");
+      alert('Account confirmed successfully!\nSign in on next page.');
+      navigate('/login');
     } catch (error) {
       alert(`Failed to confirm account: ${error}`);
     }
