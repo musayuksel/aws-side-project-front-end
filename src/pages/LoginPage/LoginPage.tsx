@@ -1,21 +1,29 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signIn, signUp } from './authService';
+import { signIn, signUp } from '../../authService';
+import { TSignUpUserWithCognitoArgs } from './LoginPage.types';
 
-const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+export const LoginPage: FC = () => {
+  const [userInfos, setUserInfos] = useState<TSignUpUserWithCognitoArgs>({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInfos((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
+  };
 
   const handleSignIn = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      const session = await signIn(email, password);
+      const session = await signIn(userInfos.email, userInfos.password);
       console.log('Sign in successful', session);
       if (session && typeof session.AccessToken !== 'undefined') {
         sessionStorage.setItem('accessToken', session.AccessToken);
@@ -34,13 +42,13 @@ const LoginPage = () => {
 
   const handleSignUp = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+    if (userInfos.password !== userInfos.confirmPassword) {
       alert('Passwords do not match');
       return;
     }
     try {
-      await signUp(email, password);
-      navigate('/confirm', { state: { email } });
+      await signUp(userInfos.email, userInfos.password);
+      navigate('/confirm', { state: { email: userInfos.email } });
     } catch (error) {
       alert(`Sign up failed: ${error}`);
     }
@@ -48,16 +56,18 @@ const LoginPage = () => {
 
   return (
     <div className="loginForm">
-      <h1>Welcome</h1>
+      <h1>WelcomeNew</h1>
       <h4>{isSignUp ? 'Sign up to create an account' : 'Sign in to your account'}</h4>
       <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
         <div>
           <input
             className="inputText"
             id="email"
+            name="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            value={userInfos.email}
+            onChange={handleChange}
             placeholder="Email"
             required
           />
@@ -66,9 +76,11 @@ const LoginPage = () => {
           <input
             className="inputText"
             id="password"
+            name="password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            value={userInfos.password}
+            onChange={handleChange}
             placeholder="Password"
             required
           />
@@ -78,9 +90,10 @@ const LoginPage = () => {
             <input
               className="inputText"
               id="confirmPassword"
+              name="confirmPassword"
               type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={userInfos.confirmPassword}
+              onChange={handleChange}
               placeholder="Confirm Password"
               required
             />
@@ -94,5 +107,3 @@ const LoginPage = () => {
     </div>
   );
 };
-
-export default LoginPage;
