@@ -1,10 +1,7 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-
 import type React from 'react';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { confirmSignUp } from './authService';
+import { confirmSignUp } from './utils/authService/authService';
 
 const ConfirmUserPage = () => {
   const navigate = useNavigate();

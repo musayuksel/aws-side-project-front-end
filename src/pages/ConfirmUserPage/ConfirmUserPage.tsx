@@ -1,6 +1,6 @@
 import { useState, type FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { confirmSignUp } from '../../authService';
+import { confirmSignUp } from '../../utils/authService/authService';
 import { TConfirmUserArgs } from './ConfirmUserPage.types';
 
 export const ConfirmUserPage: FC = () => {

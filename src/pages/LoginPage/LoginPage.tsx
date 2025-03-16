@@ -1,6 +1,6 @@
 import { useState, type FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signIn, signUp } from '../../authService';
+import { signIn, signUp } from '../../utils/authService/authService';
 import { TSignUpUserWithCognitoArgs } from './LoginPage.types';
 
 export const LoginPage: FC = () => {
