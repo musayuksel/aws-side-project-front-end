@@ -24,6 +24,7 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       // Add prettier rule without specific config
       'prettier/prettier': 'error',
+      'no-warning-comments': ['warn', { terms: ['todo', 'fixme'], location: 'start' }],
     },
   }
 );
