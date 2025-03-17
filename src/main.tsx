@@ -1,15 +1,12 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
-const el = document.getElementById('root');
+const rootElement = document.getElementById('root');
 
-if (el) {
-  ReactDOM.createRoot(el).render(
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <App />
     </React.StrictMode>
