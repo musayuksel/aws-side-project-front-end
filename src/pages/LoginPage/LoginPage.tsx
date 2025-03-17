@@ -1,7 +1,7 @@
 import { useState, type FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signIn, signUp } from '../../utils/authService/authService';
 import { TSignUpUserWithCognitoArgs } from './LoginPage.types';
+import { signIn, signUp } from '../../utils';
 
 export const LoginPage: FC = () => {
   const [userInfos, setUserInfos] = useState<TSignUpUserWithCognitoArgs>({

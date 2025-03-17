@@ -1,2 +1,1 @@
-export * from './authenticateUserWithCognito';
-export * from './signUpUserWithCognito';
+export * from './authService';
