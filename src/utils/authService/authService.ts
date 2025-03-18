@@ -3,6 +3,8 @@ import {
   InitiateAuthCommand,
   SignUpCommand,
   ConfirmSignUpCommand,
+  ResendConfirmationCodeCommand,
+  type ResendConfirmationCodeCommandInput,
   type InitiateAuthCommandInput,
   type SignUpCommandInput,
   type ConfirmSignUpCommandInput,
@@ -73,6 +75,22 @@ export const confirmSignUp = async (username: string, code: string) => {
     return true;
   } catch (error) {
     console.error('Error confirming sign up: ', error);
+    throw error;
+  }
+};
+
+export const resendConfirmationCode = async (username: string) => {
+  const params: ResendConfirmationCodeCommandInput = {
+    ClientId: config.clientId,
+    Username: username,
+  };
+  try {
+    const command = new ResendConfirmationCodeCommand(params);
+    await cognitoClient.send(command);
+    console.log('Confirmation code resent');
+    return true;
+  } catch (error) {
+    console.error('Error resending confirmation code: ', error);
     throw error;
   }
 };
