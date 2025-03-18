@@ -1,7 +1,7 @@
 import { useState, type FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TConfirmUserArgs } from './ConfirmUserPage.types';
-import { confirmSignUp } from '../../utils';
+import { confirmSignUp, resendConfirmationCode } from '../../utils';
 
 export const ConfirmUserPage: FC = () => {
   const navigate = useNavigate();
@@ -26,6 +26,15 @@ export const ConfirmUserPage: FC = () => {
       navigate('/login');
     } catch (error) {
       alert(`Failed to confirm account: ${error}`);
+    }
+  };
+
+  const handleResentCode = async () => {
+    try {
+      await resendConfirmationCode(userInfos.email);
+      alert('Confirmation code resent');
+    } catch (error) {
+      alert(`Failed to resent confirmation code: ${error}`);
     }
   };
 
@@ -57,6 +66,9 @@ export const ConfirmUserPage: FC = () => {
           />
         </div>
         <button type="submit">Confirm Account</button>
+        <button type="button" onClick={handleResentCode}>
+          Resent the code
+        </button>
       </form>
     </div>
   );
