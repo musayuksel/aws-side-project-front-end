@@ -1,5 +1,6 @@
 export const config = {
-  region: process.env.REACT_APP_AWS_REGION || '',
-  userPoolId: process.env.REACT_APP_AWS_USER_POOL_ID || '',
-  userPoolWebClientId: process.env.REACT_APP_AWS_USER_POOL_WEB_CLIENT_ID || '',
+  region: import.meta.env.VITE_AWS_REGION || '',
+  userPoolId: import.meta.env.VITE_AWS_USER_POOL_ID || '',
+  clientId: import.meta.env.VITE_AWS_USER_POOL_CLIENT_ID || '',
+  API_URL: import.meta.env.VITE_API_URL || '',
 };

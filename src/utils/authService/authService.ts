@@ -9,7 +9,7 @@ import {
   type SignUpCommandInput,
   type ConfirmSignUpCommandInput,
 } from '@aws-sdk/client-cognito-identity-provider';
-import config from '../../config.json';
+import { config } from '../../aws_config';
 
 export const cognitoClient = new CognitoIdentityProviderClient({
   region: config.region,
