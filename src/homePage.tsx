@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useFetchData } from './hooks/useFetch/useFetch';
 import { useEffect } from 'react';
+import { useFetchData } from './hooks';
 
 function parseJwt(token: string) {
   const base64Url = token.split('.')[1];

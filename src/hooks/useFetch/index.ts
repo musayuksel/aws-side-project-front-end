@@ -1,2 +1,2 @@
-export { useFetch } from './useFetch';
+export { useFetchData } from './useFetch';
 export * from './useFetch.types';
