@@ -1,5 +1,12 @@
-export type FetchResponseTypes<T> = {
+export type TFetchResponse<T> = {
   data: T | null;
-  error: any;
+  error: Error | null;
   isLoading: boolean;
+};
+
+export type TFetchDataArgs = {
+  url: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  body?: unknown;
+  signal?: AbortSignal | null;
 };
