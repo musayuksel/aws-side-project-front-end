@@ -1,0 +1,1 @@
+export { ConfirmUserPage } from './ConfirmUserPage';
